@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vladimir Toropov | Modeling the future of reality</title>
+    
+    <style>
+        :root {
+            --bg-dark: #0a0f16;
+            --bg-darker: #05080b;
+            --text-main: #ffffff;
+            --text-muted: #9ca3af;
+            --neon-blue: #00f2fe;
+            --neon-green: #00ff88;
+            --glass-bg: rgba(17, 25, 40, 0.75);
+            --glass-border: rgba(255, 255, 255, 0.05);
+            --transition: all 0.3s ease;
+            --header-height: 80px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            overflow-x: hidden;
+            width: 100%;
+            line-height: 1.6;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-dark);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--neon-blue);
+            border-radius: 4px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            box-shadow: 0 8px 32px 0 rgba(0, 242, 254, 0.05);
+            padding: 40px;
+            transition: transform 0.3s;
+        }
+
+        .neon-text {
+            background: linear-gradient(to right, var(--neon-blue), var(--neon-green));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px rgba(0, 242, 254, 0.3);
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
+        .section-desc {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .page-section {
+            min-height: 100vh;
+            padding-top: calc(var(--header-height) + 40px);
+            padding-bottom: 60px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .alt-bg {
+            background-color: var(--bg-darker);
+        }
+
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 50;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            background: rgba(10, 15, 22, 0.85);
+            backdrop-filter: blur(12px);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: var(--header-height);
+        }
+
+        .logo {
+            font-size: 1.2rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            cursor: pointer;
+            text-decoration: none;
+            color: var(--text-main);
+        }
+
+        .desktop-nav ul {
+            display: flex;
+            gap: 32px;
+            list-style: none;
+            align-items: center;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: var(--text-main);
+            font-size: 0.9rem;
+            font-weight: 500;
+            position: relative;
+            transition: var(--transition);
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background: var(--neon-blue);
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after, .nav-link.active::after {
+            width: 100%;
+        }
+
+        .nav-link.active {
+            color: var(--neon-blue);
+        }
+
+        .lang-dropdown-wrapper {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .globe-icon {
+            width: 20px;
+            height: 20px;
+            color: var(--text-main);
+            transition: color 0.3s;
+            display: flex;
+            align-items: center;
+        }
+
+        .lang-dropdown-wrapper:hover .globe-icon {
+            color: var(--neon-blue);
+        }
+
+        .lang-dropdown-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            margin-top: 15px;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            padding: 10px 0;
+            min-width: 120px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: var(--transition);
+            backdrop-filter: blur(16px);
+        }
+
+        .lang-dropdown-wrapper:hover .lang-dropdown-menu,
+        .lang-dropdown-wrapper:focus-within .lang-dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .lang-dropdown-menu a {
+            display: block;
+            padding: 8px 20px;
+            color: var(--text-main);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: background 0.2s;
+        }
+
+        .lang-dropdown-menu a:hover {
+            background: rgba(0, 242, 254, 0.1);
+            color: var(--neon-blue);
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-main);
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        .mobile-menu {
+            display: none;
+            background: var(--bg-dark);
+            border-top: 1px solid var(--glass-border);
+            position: absolute;
+            top: var(--header-height);
+            left: 0;
+            width: 100%;
+            padding: 10px 20px 20px;
+        }
+
+        .mobile-menu.open {
+            display: block;
+        }
+
+        .mobile-menu li {
+            list-style: none;
+            margin-bottom: 15px;
+        }
+
+        .mobile-menu .nav-link, .mobile-menu .lang-mobile-link {
+            display: block;
+            padding: 10px 0;
+            font-size: 1.1rem;
+            color: var(--text-main);
+            text-decoration: none;
+        }
+        
+        .mobile-menu .lang-mobile-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-muted);
+        }
+
+        #home {
+            position: relative;
+            padding-top: var(--header-height);
+            overflow: hidden;
+        }
+
+        #networkCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 10;
+            max-width: 800px;
+            text-align: center;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 6px 16px;
+            border: 1px solid rgba(0, 242, 254, 0.3);
+            background: rgba(0, 242, 254, 0.1);
+            border-radius: 50px;
+            color: var(--neon-blue);
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            margin-bottom: 24px;
+        }
+
+        .hero-title {
+            font-size: 4rem;
+            line-height: 1.1;
+            font-weight: 800;
+            margin-bottom: 20px;
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            margin-bottom: 40px;
+            font-weight: 300;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 32px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: var(--transition);
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: transparent;
+            border: 2px solid var(--neon-blue);
+            color: var(--neon-blue);
+            box-shadow: 0 0 15px rgba(0,242,254,0.2);
+            /*background: linear-gradient(90deg, var(--neon-blue), #0088ff);
+            color: #000;
+            box-shadow: 0 4px 15px rgba(0, 242, 254, 0.3);*/
+        }
+
+        .btn-primary:hover {
+            background: var(--neon-blue);
+            color: var(--bg-dark);
+            box-shadow: 0 0 25px rgba(0,242,254,0.6);
+            /*box-shadow: 0 6px 25px rgba(0, 242, 254, 0.6);
+            transform: translateY(-2px);*/
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--text-main);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-outline:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: var(--text-main);
+            transform: translateY(-2px);
+        }
+
+        .product-btn {
+            margin-top: 25px;
+            width: 100%;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(0, 242, 254, 0.3);
+        }
+
+        .product-tag-blue {
+            color: var(--neon-blue);
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: inline-block;
+        }
+
+        .product-tag-green {
+            color: var(--neon-green);
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: inline-block;
+        }
+
+        .product-card h3 {
+            font-size: 1.75rem;
+            margin-bottom: 15px;
+        }
+
+        .product-card p {
+            color: var(--text-muted);
+            margin-bottom: 25px;
+            font-size: 0.95rem;
+        }
+
+        .feature-list {
+            list-style: none;
+        }
+
+        .feature-list li {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            color: #d1d5db;
+            font-size: 0.9rem;
+        }
+
+        .feature-icon-blue {
+            width: 18px;
+            height: 18px;
+            margin-right: 10px;
+            stroke: var(--neon-blue);
+        }
+
+        .feature-icon-green {
+            width: 18px;
+            height: 18px;
+            margin-right: 10px;
+            stroke: var(--neon-green);
+        }
+
+        .feature-link {
+            color: #d1d5db;
+            text-decoration: none;
+            transition: var(--transition);
+            line-height: 1.4;
+        }
+
+        .feature-link:hover {
+            color: var(--neon-green);
+        }
+
+        .video-wrapper {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+            height: 0;
+            overflow: hidden;
+            border-radius: 16px;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+        .about-content p {
+            color: var(--text-muted);
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+        }
+
+        .about-content strong {
+            color: var(--text-main);
+            font-weight: 600;
+        }
+
+        .stats-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .stat-item {
+            padding-left: 15px;
+            border-left-width: 2px;
+            border-left-style: solid;
+        }
+
+        .stat-item-blue {
+            border-left-color: var(--neon-blue);
+        }
+
+        .stat-item-green {
+            border-left-color: var(--neon-green);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-main);
+            line-height: 1.2;
+        }
+
+        .stat-label {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+
+        .contact-cards {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .contact-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            text-decoration: none;
+            padding: 50px 30px;
+            cursor: pointer;
+        }
+
+        .contact-card:hover {
+            transform: translateY(-5px);
+            background: rgba(17, 25, 40, 0.9);
+        }
+
+        .contact-icon {
+            width: 48px;
+            height: 48px;
+            margin-bottom: 20px;
+        }
+
+        .contact-card-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 10px;
+        }
+
+        .contact-card-desc {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .icon-mql5 {
+            fill: var(--neon-green);
+        }
+        
+        .icon-linkedin {
+            fill: var(--neon-blue);
+        }
+
+        .contact-card:hover .icon-mql5, .contact-card:hover .icon-linkedin {
+            filter: drop-shadow(0 0 10px currentColor);
+        }
+
+        footer {
+            border-top: 1px solid var(--glass-border);
+            padding: 40px 0;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            background: var(--bg-darker);
+        }
+
+        .footer-note {
+            margin-top: 10px;
+            font-size: 0.8rem;
+        }
+
+        @media (max-width: 992px) {
+            .hero-title { font-size: 3rem; }
+            .grid-2, .contact-cards { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 768px) {
+            .desktop-nav { display: none; }
+            .mobile-menu-btn { display: block; }
+            .hero-title { font-size: 2.2rem; }
+            .section-title { font-size: 2rem; }
+            .glass-panel { padding: 25px; }
+            .page-section { padding-top: calc(var(--header-height) + 20px); }
+        }
+        
+        @media (max-width: 480px) {
+            .hero-title { font-size: 1.8rem; }
+            .hero-subtitle { font-size: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="container nav-container">
+            <a href="#home" class="logo">
+                Vladimir <span class="neon-text">TOROPOV</span>
+            </a>
+            
+            <nav class="desktop-nav">
+                <ul>
+                    <li><a href="#home" class="nav-link active">Home</a></li>
+                    <li><a href="#products" class="nav-link">Products</a></li>
+                    <li><a href="#about" class="nav-link">About</a></li>
+                    <li><a href="#contacts" class="nav-link">Contacts</a></li>
+                    <li class="lang-dropdown-wrapper">
+                        <div class="globe-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="2" y1="12" x2="22" y2="12"></line>
+                                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                            </svg>
+                        </div>
+                        <div class="lang-dropdown-menu">
+                            <a href="#">English</a>
+                            <a href="https://www.toropovv.ru" target="_blank" rel="noopener noreferrer">Русский</a>
+                        </div>
+                    </li>
+                </ul>
+            </nav>
+
+            <button class="mobile-menu-btn" id="mobileToggle" aria-label="Menu">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+        
+        <div class="mobile-menu" id="mobileMenu">
+            <ul>
+                <li><a href="#home" class="nav-link mobile-link active">Home</a></li>
+                <li><a href="#products" class="nav-link mobile-link">Products</a></li>
+                <li><a href="#about" class="nav-link mobile-link">About</a></li>
+                <li><a href="#contacts" class="nav-link mobile-link">Contacts</a></li>
+                <li style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px; margin-top: 10px;">
+                    <span class="lang-mobile-link" style="padding-bottom: 5px;">Language / Язык:</span>
+                    <a href="#" class="lang-mobile-link" style="padding-left: 20px;">English</a>
+                    <a href="https://www.toropovv.ru" target="_blank" rel="noopener noreferrer" class="lang-mobile-link" style="padding-left: 20px;">Русский</a>
+                </li>
+            </ul>
+        </div>
+    </header>
+
+    <main>
+        <section id="home" class="page-section">
+            <canvas id="networkCanvas"></canvas>
+            
+            <div class="container hero-content">
+                <div class="badge">STATISTICS | AI | FINANCE</div>
+                <h1 class="hero-title">
+                    Modeling the future <br>
+                    <span class="neon-text">of reality</span>
+                </h1>
+                <p class="hero-subtitle">
+                    Quantitative research and software development. Rigorous mathematical models and robust, fault-tolerant code.
+                </p>
+                <div class="hero-buttons">
+                    <a href="#products" class="btn btn-primary">My products</a>
+                    <a href="#contacts" class="btn btn-outline">Contact me</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="products" class="page-section alt-bg">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">My <span class="neon-text">Products</span></h2>
+                    <p class="section-desc">Professional tools for traders based on MetaTrader 5.</p>
+                </div>
+
+                <div class="grid-2">
+                    <div class="glass-panel product-card">
+                        <div class="product-tag-blue">Indicator / Analytics</div>
+                        <h3>Price Range MT5</h3>
+                        <p>An indicator that uses statistical modeling of price ranges. It notifies you of real-time market changes via push notifications. It works for any symbol and any timeframe.</p>
+                        <ul class="feature-list">
+                            <li>
+                                <svg class="feature-icon-blue" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> 
+                                Dynamic calculation of levels and trends
+                            </li>
+                            <li>
+                                <svg class="feature-icon-blue" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> 
+                                Trading symbol agnostic
+                            </li>
+                            <li>
+                                <svg class="feature-icon-blue" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> 
+                                Mobile notifications about new trends and levels
+                            </li>
+                        </ul>
+                        <a href="https://www.mql5.com/en/market/product/133246" target="_blank" rel="noopener noreferrer" class="btn btn-primary product-btn">Try for free</a>
+                    </div>
+
+                    <div class="glass-panel product-card">
+                        <div class="product-tag-green">Product instructions</div>
+                        <h3>More details about Price Range MT5</h3>
+                        <p>Please read more about the features and strengths of Price Range MT5 on my blog.<br><br>
+                        You can trade trends or price ranges using this indicator, receive notifications about important events,
+                        and connect it to a trading robot for fully automated trading.<br><br>
+                        Click the links and read my blog:
+                        </p>
+                        <ul class="feature-list">
+                            <li>
+                                <svg class="feature-icon-green" fill="none" viewBox="0 0 24 24" style="flex-shrink:0;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> 
+                                <a href="https://www.mql5.com/en/blogs/post/762909" target="_blank" rel="noopener noreferrer" class="feature-link">How to stay updated on price movements with Price Range MT5</a>
+                            </li>
+                            <li>
+                                <svg class="feature-icon-green" fill="none" viewBox="0 0 24 24" style="flex-shrink:0;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> 
+                                <a href="https://www.mql5.com/en/blogs/post/761306" target="_blank" rel="noopener noreferrer" class="feature-link">Trading strategies for the Price Range MT5 indicator</a>
+                            </li>
+                            <li>
+                                <svg class="feature-icon-green" fill="none" viewBox="0 0 24 24" style="flex-shrink:0;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> 
+                                <a href="https://www.mql5.com/en/blogs/post/767380" target="_blank" rel="noopener noreferrer" class="feature-link">How to attach the Price Range indicator to your trading robot</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="video-wrapper">
+                    <div class="section-header" style="margin-bottom: 30px;">
+                        <h3 class="section-title" style="font-size: 1.8rem;">Video about the indicator</h3>
+                    </div>
+                    <div class="video-container">
+                        <iframe src="https://www.youtube.com/embed/nmWIQ3bLCU8" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="about" class="page-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">About <span class="neon-text">me</span></h2>
+                </div>
+                
+                <div class="glass-panel">
+                    <div class="about-content">
+                        <h3 style="font-size: 1.8rem; margin-bottom: 20px;">Vladimir Toropov</h3>
+                        <p>
+                        My qualifications: PhD in mechanical Engineering | 20+ years of Mathematical Modeling | 10+ years in a bank as Head of Securities Department | I'm currently doing my Master's Degree in Computationl Science and Engineering  in TU Wien (AI + Numerical Computation).
+                        </p>
+                        <p>
+                            My approach to trading involves applying rigorous mathematical, statistical, and neural network methods to the financial markets, areas with which I am well-acquainted through my work in banking.
+                        </p>
+                        <p>
+                            The foundation of my work lies in big data, probabilistic modeling, machine learning, and strategy implementation using a modern technology stack, underpinned by experience in banking and scientific research.
+                        </p>
+                        
+                        <div class="stats-grid">
+                            <div class="stat-item stat-item-blue">
+                                <div class="stat-value">Engineer</div>
+                                <div class="stat-label">PhD in engineering</div>
+                            </div>
+                            <div class="stat-item stat-item-green">
+                                <div class="stat-value">AI Architect</div>
+                                <div class="stat-label">Mathematician and computational scientist</div>
+                            </div>
+                            <div class="stat-item stat-item-blue">
+                                <div class="stat-value">10+ years in banking</div>
+                                <div class="stat-label">All financial markets</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="contacts" class="page-section alt-bg">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">Contact <span class="neon-text">me</span></h2>
+                    <p class="section-desc">Choose a convenient platform for professional communication and collaboration.</p>
+                </div>
+
+                <div class="contact-cards">
+                    <a href="https://www.mql5.com/en/users/vst" target="_blank" rel="noopener noreferrer" class="glass-panel contact-card">
+                        <svg class="contact-icon icon-mql5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Упрощенная стилизация иконки платформы -->
+                            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                        </svg>
+                        <h3 class="contact-card-title">My profile on MQL5.COM</h3>
+                        <p class="contact-card-desc">My products and blog. <br> Send me a private message.</p>
+                    </a>
+
+                    <a href="https://www.linkedin.com/in/vladimir-toropov/" target="_blank" rel="noopener noreferrer" class="glass-panel contact-card">
+                        <svg class="contact-icon icon-linkedin" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                        </svg>
+                        <h3 class="contact-card-title">I'm on LinkedIn</h3>
+                        <p class="contact-card-desc">Professional networking, posts, resume, education, and work experience.</p>
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Vladimir Toropov</p>
+            <p class="footer-note">Personal website</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // --- 1. Mobile Menu Logic ---
+            const mobileToggle = document.getElementById('mobileToggle');
+            const mobileMenu = document.getElementById('mobileMenu');
+            
+            mobileToggle.addEventListener('click', () => {
+                mobileMenu.classList.toggle('open');
+            });
+
+            // --- 2. Smooth Scrolling & Active State Logic ---
+            const sections = document.querySelectorAll('.page-section');
+            const navLinks = document.querySelectorAll('.nav-link');
+            const headerHeight = document.querySelector('header').offsetHeight;
+
+            // Скролл по клику
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    const targetId = this.getAttribute('href');
+                    if(targetId.startsWith('#')) {
+                        e.preventDefault();
+                        const targetSection = document.querySelector(targetId);
+                        
+                        if(targetSection) {
+                            // Закрываем мобильное меню при клике
+                            mobileMenu.classList.remove('open');
+                            
+                            window.scrollTo({
+                                top: targetSection.offsetTop - headerHeight,
+                                behavior: 'smooth'
+                            });
+                        }
+                    }
+                });
+            });
+
+            // Подсветка активного пункта меню при скролле
+            window.addEventListener('scroll', () => {
+                let current = '';
+                const scrollY = window.pageYOffset;
+
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop - headerHeight - 150; // offset для активации
+                    const sectionHeight = section.clientHeight;
+                    if (scrollY >= sectionTop && scrollY < sectionTop + sectionHeight) {
+                        current = section.getAttribute('id');
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === `#${current}`) {
+                        link.classList.add('active');
+                    }
+                });
+            });
+
+            // --- 3. Canvas Network Background Logic ---
+            const canvas = document.getElementById('networkCanvas');
+            const ctx = canvas.getContext('2d');
+            let particles = [];
+            let animationFrameId;
+
+            function resizeCanvas() {
+                // Берем размеры родительского контейнера (#home)
+                const homeSection = document.getElementById('home');
+                canvas.width = homeSection.offsetWidth;
+                canvas.height = homeSection.offsetHeight;
+                initParticles();
+            }
+
+            window.addEventListener('resize', resizeCanvas);
+
+            class Particle {
+                constructor() {
+                    this.x = Math.random() * canvas.width;
+                    this.y = Math.random() * canvas.height;
+                    this.vx = (Math.random() - 0.5) * 0.8; 
+                    this.vy = (Math.random() - 0.5) * 0.8;
+                    this.radius = Math.random() * 1.5 + 0.5;
+                }
+
+                update() {
+                    this.x += this.vx;
+                    this.y += this.vy;
+
+                    if (this.x < 0) this.x = canvas.width;
+                    if (this.x > canvas.width) this.x = 0;
+                    if (this.y < 0) this.y = canvas.height;
+                    if (this.y > canvas.height) this.y = 0;
+                }
+
+                draw() {
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = '#00f2fe';
+                    ctx.fill();
+                }
+            }
+
+            function initParticles() {
+                particles = [];
+                // Настраиваем количество точек в зависимости от ширины экрана
+                let numParticles = Math.floor(window.innerWidth / 25);
+                if(numParticles > 70) numParticles = 70; // Ограничение для производительности
+                
+                for (let i = 0; i < numParticles; i++) {
+                    particles.push(new Particle());
+                }
+            }
+
+            function drawLines() {
+                for (let i = 0; i < particles.length; i++) {
+                    for (let j = i + 1; j < particles.length; j++) {
+                        const dx = particles[i].x - particles[j].x;
+                        const dy = particles[i].y - particles[j].y;
+                        const distance = Math.sqrt(dx * dx + dy * dy);
+
+                        if (distance < 130) {
+                            ctx.beginPath();
+                            ctx.strokeStyle = `rgba(0, 242, 254, ${0.4 - distance/325})`; // Прозрачность зависит от дистанции
+                            ctx.lineWidth = 0.5;
+                            ctx.moveTo(particles[i].x, particles[i].y);
+                            ctx.lineTo(particles[j].x, particles[j].y);
+                            ctx.stroke();
+                        }
+                    }
+                }
+            }
+
+            function animate() {
+                // Очистка канваса
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                for (let i = 0; i < particles.length; i++) {
+                    particles[i].update();
+                    particles[i].draw();
+                }
+                drawLines();
+
+                animationFrameId = requestAnimationFrame(animate);
+            }
+
+            // Запуск анимации
+            resizeCanvas();
+            animate();
+        });
+    </script>
+</body>
+</html>
