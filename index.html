@@ -81,7 +81,18 @@
             -webkit-text-fill-color: transparent;
             text-shadow: 0 0 20px rgba(0, 242, 254, 0.3);
         }
-
+        /* Делаем так, чтобы картинка и текст выстроились в ровную линию */
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px; /* Тот самый небольшой отступ между иконкой и текстом */
+        }
+        /* Настраиваем размер самой иконки */
+        .nav-logo-icon {
+            height: 1.2em; /* Высота будет автоматически подстраиваться под размер шрифта текста */
+            width: auto;   /* Ширина подстроится пропорционально */
+            display: block;
+        }
         .section-header {
             text-align: center;
             margin-bottom: 60px;
@@ -616,6 +627,7 @@
     <header>
         <div class="container nav-container">
             <a href="#home" class="logo">
+                <img src="logo.png" alt="Logo" class="nav-logo-icon">
                 Vladimir <span class="neon-text">TOROPOV</span>
             </a>
             
