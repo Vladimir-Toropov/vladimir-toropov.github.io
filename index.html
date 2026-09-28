@@ -112,10 +112,17 @@
 
         .page-section {
             min-height: 100vh;
-            padding-top: calc(var(--header-height) + 40px);
+            /* Уменьшаем добавочный отступ под меню с 40px до, например, 15px */
+            padding-top: calc(var(--header-height) + 15px); 
             padding-bottom: 60px;
             display: flex;
             flex-direction: column;
+            /* Меняем центрирование на выравнивание по верхнему краю */
+            justify-content: flex-start; 
+        }
+
+        /* Исключение для главной */
+        #home.page-section {
             justify-content: center;
         }
 
